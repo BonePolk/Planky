@@ -9,9 +9,7 @@ from Planky.events.messageEvent import MessageEvent
 from Planky.messages.parsedMessage import ParsedMessage
 from Planky.messages.pingMessage import PingMessage
 from Planky.messages.rawMessage import RawMessage
-from Planky.plankyData import PlankyData
 from Planky.plankyProtocol import PlankyProtocol
-from tests.servers.tcpserver import message
 
 
 @dataclass
@@ -50,8 +48,8 @@ class HelloProtocol(PlankyProtocol):
 
         return msg
 
-server  = PlankyServer("127.0.0.1", port=1111)
-server.handler.set_protocol(HelloProtocol)
+server = PlankyServer("127.0.0.1", port=1112)
+server.load_server_cert("public.pem", "private.pem")
 
 @server.on_message(HelloMessage)
 async def hello(handler, event: MessageEvent):

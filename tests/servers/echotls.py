@@ -3,11 +3,12 @@ from Planky.messages.parsedMessage import ParsedMessage
 from Planky.plankyData import PlankyData
 from Planky.plankyServer import PlankyServer
 
-server = PlankyServer("127.0.0.1", port=1111)
+server = PlankyServer("127.0.0.1", port=1112)
+server.load_server_cert("public.pem", "private.pem")
 
 @server.on_message(ParsedMessage)
 async def parsed_message(handler, event: MessageEvent):
-    print(f"Client sended parsed message {event}")
+    print(event)
     await handler.send_data(PlankyData(event.message.content))
 
 

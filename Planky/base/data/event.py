@@ -3,4 +3,9 @@ from dataclasses import dataclass
 
 @dataclass
 class Event:
-    time: float
+    client_ip: str
+    client_port: int
+
+
+
+    

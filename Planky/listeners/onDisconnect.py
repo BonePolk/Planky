@@ -1,5 +1,5 @@
 from Planky.base.listener import Listener
 
 
-class OnConnect(Listener):
+class OnDisconnect(Listener):
     pass
