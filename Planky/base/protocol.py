@@ -8,12 +8,28 @@ class Protocol:
         self.is_connected = is_connected
 
     async def send_ping(self, writer: Writer):
+        """
+        Generate and send ping to writer.
+
+        :param writer: writer from handler
+        """
         await self.send_bytes(writer, self.generate_ping())
 
     def check_ping(self, data: bytes):
+        """
+        Check if data is ping.
+
+        :param data: some message content
+        :return: True if data is ping message
+        """
         return not data
 
     def generate_ping(self):
+        """
+        Generate ping message.
+
+        :return: ping message content
+        """
         return b''
 
     async def receive(self, reader: Reader): raise NotImplementedError

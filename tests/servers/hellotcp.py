@@ -9,7 +9,7 @@ from Planky.events.messageEvent import MessageEvent
 from Planky.messages.parsedMessage import ParsedMessage
 from Planky.messages.pingMessage import PingMessage
 from Planky.messages.rawMessage import RawMessage
-from Planky.plankyProtocol import PlankyProtocol
+from Planky import PlankyProtocol
 
 
 @dataclass

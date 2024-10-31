@@ -1,17 +1,20 @@
-# Welcome to Planky
+# Quick Start
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+```python
+from Planky.events.messageEvent import MessageEvent
+from Planky.messages.parsedMessage import ParsedMessage
+from Planky.plankyData import PlankyData
+from Planky.plankyServer import PlankyServer
 
-## Commands
+server = PlankyServer("127.0.0.1", port=1111)
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+@server.on_message(ParsedMessage)
+async def parsed_message(handler, event: MessageEvent):
+    if event.message.content == b"hello": 
+        await handler.send_data(PlankyData(payload=b"world"))
+    else:
+        await handler.send_data(PlankyData(payload=event.message.content))
 
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+if __name__ == "__main__":
+    server.mainloop()
+```

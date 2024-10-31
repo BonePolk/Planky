@@ -5,5 +5,5 @@ class Server:
 
     def load_server_cert(self, cert_path: str, key_path: str, password: str = None): raise NotImplementedError
     def add_trusted_ca(self, ca_path: str): raise NotImplementedError
-    def start(self): raise NotImplementedError
+    def _start(self): raise NotImplementedError
     async def mainloop(self): raise NotImplementedError

@@ -13,6 +13,9 @@ from Planky.plankyWriter import PlankyWriter
 
 
 class PlankyHandler(Handler):
+    """
+    Handler for the Planky server.
+    """
     def __init__(self, server):
         super().__init__(server)
         self.client_ip = None
@@ -46,6 +49,12 @@ class PlankyHandler(Handler):
             await self.close_connection()
 
     async def close_connection(self, description: str = None, code = 0):
+        """
+        Close connection.
+
+        :param description: description of disconnect
+        :param code: error code of disconnect
+        """
         self.client_connected = False
         await self.writer.writer.drain()
         await self._check_listeners(DisconnectEvent(self.client_ip, self.client_port, description, code), "OnDisconnect")
