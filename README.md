@@ -1,6 +1,6 @@
 # Planky
 
-![icon.png](icon.png)
+![icon.png](https://raw.githubusercontent.com/BonePolk/Planky/refs/heads/master/icon.png)
 
 <details>
 <summary>🇬🇧 English</summary>
