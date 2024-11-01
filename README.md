@@ -1,5 +1,7 @@
 # Planky
 
+![icon.png](icon.png)
+
 <details>
 <summary>🇬🇧 English</summary>
 
