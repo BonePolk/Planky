@@ -26,7 +26,11 @@ class ConnectionTestCase(unittest.TestCase):
         client_socket.send(struct.pack(">I", 0))
         data = client_socket.recv(4)
 
-        server.stop()
+        try:
+            server.stop()
+        except:
+            pass
+
         self.assertEqual(data, b"\x00\x00\x00\x00")
 
     def test_echo(self):
@@ -99,6 +103,42 @@ class ConnectionTestCase(unittest.TestCase):
 
         self.assertEqual(excepted, recved)
 
+    def test_echo_clients(self):
+        from tests.servers.echotcp import server, mainloop
+        start_server(mainloop, server)
+
+        client_socket = socket.create_connection(("127.0.0.1", 1111))
+        client_socket.settimeout(5)
+
+        recved = b""
+
+        for _ in range(5):
+            client_socket.send(struct.pack(">I", 1)+b"I")
+            recved = client_socket.recv(5)
+
+            if recved != b"\x00\x00\x00\x01I":
+                break
+
+        client_socket2 = socket.create_connection(("127.0.0.1", 1111))
+        client_socket2.settimeout(5)
+
+        for _ in range(5):
+            client_socket2.send(struct.pack(">I", 1)+b"I")
+            recved = client_socket2.recv(5)
+
+            if recved != b"\x00\x00\x00\x01I":
+                break
+
+            client_socket.send(struct.pack(">I", 1) + b"I")
+            recved = client_socket.recv(5)
+
+            if recved != b"\x00\x00\x00\x01I":
+                break
+
+        server.stop()
+
+        self.assertEqual(b"\x00\x00\x00\x01I", recved)
+
 
 class TlsConnectionTestCase(unittest.TestCase):
     def test_ssl_cert_pinning(self):
@@ -167,11 +207,15 @@ class TlsConnectionTestCase(unittest.TestCase):
         self.assertEqual(sent, recved)
 
     def test_hello_tls(self):
-        from tests.servers.hellotcp import server, mainloop
+        from tests.servers.hellotls import server, mainloop
         start_server(mainloop, server)
 
-        client_socket = socket.create_connection(("127.0.0.1", 1111))
-        client_socket.settimeout(5)
+        context = ssl.create_default_context()
+        context.load_verify_locations("public.pem")
+        context.check_hostname = False
+        sock = socket.create_connection(("localhost", 1112))
+        ssl_socket = context.wrap_socket(sock)
+        ssl_socket.settimeout(5)
 
         timeout = False
         payload = b"\x00parsed"
@@ -179,22 +223,22 @@ class TlsConnectionTestCase(unittest.TestCase):
         recved = None
 
         try:
-            client_socket.send(struct.pack(">I", len(payload)) + payload)
-            recved = client_socket.recv(len(excepted))
+            ssl_socket.send(struct.pack(">I", len(payload)) + payload)
+            recved = ssl_socket.recv(len(excepted))
             if recved != excepted: raise Exception
 
             payload = b"\x01hello"
             excepted = struct.pack(">I", len(b"\x01World!")) + b"\x01World!"
-            client_socket.send(struct.pack(">I", len(payload)) + payload)
-            recved = client_socket.recv(len(excepted))
+            ssl_socket.send(struct.pack(">I", len(payload)) + payload)
+            recved = ssl_socket.recv(len(excepted))
             if recved != excepted: raise Exception
 
             t = time.time()
             payload = b"\x02"+struct.pack(">I", int(t))
             excepted_payload = b"\x02"+str(int(t)).encode()
             excepted = struct.pack(">I", len(excepted_payload)) + excepted_payload
-            client_socket.send(struct.pack(">I", len(payload)) + payload)
-            recved = client_socket.recv(len(excepted))
+            ssl_socket.send(struct.pack(">I", len(payload)) + payload)
+            recved = ssl_socket.recv(len(excepted))
             if recved != excepted: raise Exception
         except TimeoutError as e: timeout = True
         except Exception as e: pass
@@ -203,6 +247,51 @@ class TlsConnectionTestCase(unittest.TestCase):
         if timeout: raise TimeoutError
 
         self.assertEqual(excepted, recved)
+
+    def test_echo_clients_tls(self):
+        from tests.servers.echotls import server, mainloop
+        start_server(mainloop, server)
+
+        context = ssl.create_default_context()
+        context.load_verify_locations("public.pem")
+        context.check_hostname = False
+        sock = socket.create_connection(("localhost", 1112))
+        ssl_socket = context.wrap_socket(sock)
+        ssl_socket.settimeout(5)
+
+        recved = b""
+
+        for _ in range(5):
+            ssl_socket.send(struct.pack(">I", 1)+b"I")
+            recved = ssl_socket.recv(5)
+
+            if recved != b"\x00\x00\x00\x01I":
+                break
+
+        context2 = ssl.create_default_context()
+        context2.load_verify_locations("public.pem")
+        context2.check_hostname = False
+        sock2 = socket.create_connection(("localhost", 1112))
+        ssl_socket2 = context2.wrap_socket(sock2)
+        ssl_socket2.settimeout(5)
+
+        for _ in range(5):
+            ssl_socket2.send(struct.pack(">I", 1)+b"I")
+            recved = ssl_socket2.recv(5)
+
+            if recved != b"\x00\x00\x00\x01I":
+                break
+
+            ssl_socket.send(struct.pack(">I", 1) + b"I")
+            recved = ssl_socket.recv(5)
+
+            if recved != b"\x00\x00\x00\x01I":
+                break
+
+        server.stop()
+
+        self.assertEqual(b"\x00\x00\x00\x01I", recved)
+
 
 if __name__ == '__main__':
     unittest.main()

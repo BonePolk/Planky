@@ -52,21 +52,21 @@ server  = PlankyServer("127.0.0.1", port=1111)
 server.handler.set_protocol(HelloProtocol)
 
 @server.on_message(HelloMessage)
-async def hello(handler, event: MessageEvent):
+async def hello(client, event: MessageEvent):
     print(f"Hello {event.message}")
-    await handler.send_data(HelloData(code=HelloCodes.Hello, payload=b"World!"))
+    await client.send_data(HelloData(code=HelloCodes.Hello, payload=b"World!"))
 
 @server.on_message(TimeMessage)
-async def time(handler, event: MessageEvent):
+async def time(client, event: MessageEvent):
     event.message: TimeMessage
 
     print(f"Time {event.message}")
-    await handler.send_data(HelloData(code=HelloCodes.Time, time=event.message.time))
+    await client.send_data(HelloData(code=HelloCodes.Time, time=event.message.time))
 
 @server.on_message(ParsedMessage)
-async def parsed(handler, event: MessageEvent):
+async def parsed(client, event: MessageEvent):
     print(f"Parsed {event.message}")
-    await handler.send_data(HelloData(code=HelloCodes.Plain, payload=event.message.content))
+    await client.send_data(HelloData(code=HelloCodes.Plain, payload=event.message.content))
 
 def mainloop():
     server.mainloop()

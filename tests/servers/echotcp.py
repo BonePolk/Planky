@@ -6,8 +6,9 @@ from Planky.plankyServer import PlankyServer
 server = PlankyServer("127.0.0.1", port=1111)
 
 @server.on_message(ParsedMessage)
-async def parsed_message(handler, event: MessageEvent):
-    await handler.send_data(PlankyData(event.message.content))
+async def parsed_message(client, event: MessageEvent):
+    print(f"Received {event}")
+    await client.send_data(PlankyData(event.message.content))
 
 
 def mainloop():

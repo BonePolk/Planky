@@ -9,7 +9,7 @@ from Planky.events.messageEvent import MessageEvent
 from Planky.messages.parsedMessage import ParsedMessage
 from Planky.messages.pingMessage import PingMessage
 from Planky.messages.rawMessage import RawMessage
-from Planky.plankyProtocol import PlankyProtocol
+from Planky import PlankyProtocol
 
 
 @dataclass
@@ -50,23 +50,24 @@ class HelloProtocol(PlankyProtocol):
 
 server = PlankyServer("127.0.0.1", port=1112)
 server.load_server_cert("public.pem", "private.pem")
+server.handler.set_protocol(HelloProtocol)
 
 @server.on_message(HelloMessage)
-async def hello(handler, event: MessageEvent):
+async def hello(client, event: MessageEvent):
     print(f"Hello {event.message}")
-    await handler.send_data(HelloData(code=HelloCodes.Hello, payload=b"World!"))
+    await client.send_data(HelloData(code=HelloCodes.Hello, payload=b"World!"))
 
 @server.on_message(TimeMessage)
-async def time(handler, event: MessageEvent):
+async def time(client, event: MessageEvent):
     event.message: TimeMessage
 
     print(f"Time {event.message}")
-    await handler.send_data(HelloData(code=HelloCodes.Time, time=event.message.time))
+    await client.send_data(HelloData(code=HelloCodes.Time, time=event.message.time))
 
 @server.on_message(ParsedMessage)
-async def parsed(handler, event: MessageEvent):
+async def parsed(client, event: MessageEvent):
     print(f"Parsed {event.message}")
-    await handler.send_data(HelloData(code=HelloCodes.Plain, payload=event.message.content))
+    await client.send_data(HelloData(code=HelloCodes.Plain, payload=event.message.content))
 
 def mainloop():
     server.mainloop()

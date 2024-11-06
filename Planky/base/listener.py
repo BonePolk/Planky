@@ -6,5 +6,5 @@ class Listener:
         self.callback = callback
         self.filter = filter
 
-    async def check_event(self, event, handler):
-        if not self.filter or self.filter(event): await self.callback(handler, event)
+    async def check_event(self, event, client):
+        if not self.filter or self.filter(event): await self.callback(client, event)

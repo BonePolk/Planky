@@ -6,4 +6,6 @@ class Writer:
         self.writer = writer
         self.is_connected = is_connected
 
+    def get_extra_info(self, key): return self.writer.get_extra_info(key)
+
     async def send_bytes(self, data: bytes): raise NotImplementedError

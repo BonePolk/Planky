@@ -7,9 +7,9 @@ server = PlankyServer("127.0.0.1", port=1112)
 server.load_server_cert("public.pem", "private.pem")
 
 @server.on_message(ParsedMessage)
-async def parsed_message(handler, event: MessageEvent):
+async def parsed_message(client, event: MessageEvent):
     print(event)
-    await handler.send_data(PlankyData(event.message.content))
+    await client.send_data(PlankyData(event.message.content))
 
 
 def mainloop():

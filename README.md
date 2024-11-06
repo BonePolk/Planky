@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
 ### Documentation
 
-- [ReadTheDocs](https://planky.readthedocs.io/en/latest/)
+- [ReadTheDocs](https://planky.readthedocs.io/en/stable/)
 
 ### Thanks
 
@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
 ### Документация
 
-- [ReadTheDocs](https://planky.readthedocs.io/en/latest/)
+- [ReadTheDocs](https://planky.readthedocs.io/en/stable/)
 
 ### Благодарности
 

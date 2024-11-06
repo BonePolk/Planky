@@ -9,24 +9,24 @@ from Planky.plankyServer import PlankyServer
 server = PlankyServer("127.0.0.1", port=1112)
 server.load_server_cert("public.pem", "private.pem")
 
-@server.on_connect(filter=lambda event: event.client_ip == "127.0.0.1")
-async def connect(handler, event: ConnectEvent):
+@server.on_connect()
+async def connect(client, event: ConnectEvent):
     print(f"Client connected {event}")
 
 @server.on_message(RawMessage)
-async def message(handler, event: MessageEvent):
+async def message(client, event: MessageEvent):
     print(f"Client sended message {event}")
 
 @server.on_message(PingMessage)
-async def ping(handler, event: MessageEvent):
+async def ping(client, event: MessageEvent):
     print(f"Client sended ping {event}")
 
 @server.on_message(ParsedMessage)
-async def parsed_message(handler, event: MessageEvent):
+async def parsed_message(client, event: MessageEvent):
     print(f"Client sended parsed message {event}")
 
 @server.on_disconnect()
-async def disconnect(handler, event: DisconnectEvent):
+async def disconnect(client, event: DisconnectEvent):
     print(f"Client disconnected {event}")
 
 

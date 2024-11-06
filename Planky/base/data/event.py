@@ -1,11 +1,8 @@
 from dataclasses import dataclass
 
+from Planky.base.data.extra import Extra
+
 
 @dataclass
 class Event:
-    client_ip: str
-    client_port: int
-
-
-
-    
+    extra: Extra
