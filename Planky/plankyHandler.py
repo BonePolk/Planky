@@ -37,17 +37,17 @@ class PlankyHandler(Handler):
     async def handle_client(self, reader: StreamReader, writer: StreamWriter):
         client = await self._create_client(reader, writer)
 
-        await self._check_listeners(ConnectEvent(client.extra), client, "OnConnect")
+        await self._check_listeners(ConnectEvent(), client, "OnConnect")
 
         client.client_connected = True
         try:
             while client.is_connected():
                 message = await client.receive()
-                await self._check_listeners(MessageEvent(client.extra, message), client, "OnMessage")
+                await self._check_listeners(MessageEvent(message), client, "OnMessage")
 
                 parsed_message = await self.protocol.parse_message(message.content)
                 if isinstance(parsed_message, PingMessage): await client.send_ping()
-                await self._check_listeners(MessageEvent(client.extra, parsed_message), client, "OnMessage")
+                await self._check_listeners(MessageEvent(parsed_message), client, "OnMessage")
         except (TimeoutError, ConnectionResetError) as e: pass
         except (ParseException, Exception) as e:
             print(traceback.format_exc())
@@ -71,5 +71,5 @@ class PlankyHandler(Handler):
 
         self.clients.pop(client_id)
 
-        await self._check_listeners(DisconnectEvent(client.extra, description, code), client, "OnDisconnect")
+        await self._check_listeners(DisconnectEvent(description, code), client, "OnDisconnect")
 

@@ -15,6 +15,12 @@ def start_server(mainloop, server):
     while not server.started:
         sleep(0.1)
 
+def stop_server(server):
+    try:
+        server.stop()
+    except TypeError as e:
+        print("Server already stopped")
+
 
 class ConnectionTestCase(unittest.TestCase):
     def test_ping(self):
