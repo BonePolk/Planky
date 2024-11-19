@@ -48,7 +48,7 @@ class PlankyHandler(Handler):
                 parsed_message = await self.protocol.parse_message(message.content)
                 if isinstance(parsed_message, PingMessage): await client.send_ping()
                 await self._check_listeners(MessageEvent(client.extra, parsed_message), client, "OnMessage")
-        except TimeoutError as e: pass
+        except (TimeoutError, ConnectionResetError) as e: pass
         except (ParseException, Exception) as e:
             print(traceback.format_exc())
             raise e
