@@ -9,6 +9,7 @@
 - Removed unused "extra" class
 - Added a "ping_time" to client to store the timestamp of the last ping.
 - "parse_extra" now don't return Extra class
+- add default value for Storage.get
 
 ### Version 0.0.1.2
 
