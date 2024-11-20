@@ -1,5 +1,9 @@
 # Quick Start
 
+You can use **Planky** for building your own tcp/tls server.
+
+For example you can create a simple hello world server:
+
 ```python
 from Planky.events.messageEvent import MessageEvent
 from Planky.messages.parsedMessage import ParsedMessage
@@ -18,3 +22,19 @@ async def parsed_message(handler, event: MessageEvent):
 if __name__ == "__main__":
     server.mainloop()
 ```
+
+# Available features
+
+## Default events
+
+- **ConnectEvent**
+- **DisconnectEvent**
+- **MessageEvent**
+- **PingEvent**
+
+## Default listener decorators
+
+- **server.on_connect**
+- **server.on_disconnect**
+- **server.on_message**
+- **server.on_ping**
