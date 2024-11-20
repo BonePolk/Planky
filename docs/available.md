@@ -1,4 +1,4 @@
-# Available features
+# Available default objects
 
 ## Default events
 
@@ -13,3 +13,8 @@
 - **server.on_disconnect**
 - **server.on_message**
 - **server.on_ping**
+
+## Default storage items
+
+- **client_ip**
+- **client_port**
