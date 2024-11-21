@@ -1,5 +1,3 @@
-from Planky.events.pingEvent import PingEvent
-
 # Event handling
 
 ## **server.on_connect**
@@ -68,7 +66,7 @@ async def on_raw_message(client: PlankyClient, event: MessageEvent):
 server.mainloop()
 ```
 
-## **server.on_message**
+## **server.on_ping**
 
 You can handle client messages with `server.on_ping` decorator the same as `server.on_message(PingMessage)`.
 
@@ -80,7 +78,7 @@ server = PlankyServer("127.0.0.1", port=1111)
 
 @server.on_ping() 
 async def on_ping(client: PlankyClient, event: PingEvent):
-    print(f"Client sent message {event}")
+    print(f"Client sent ping {event}")
 
 server.mainloop()
 ```
