@@ -301,7 +301,7 @@ class TlsConnectionTestCase(unittest.TestCase):
 
 
 class StorageTestCase(unittest.TestCase):
-    def test_storage(self):
+    def test_client_storage(self):
         from tests.servers.storagetcp import server, mainloop
         start_server(mainloop, server)
 
@@ -319,7 +319,7 @@ class StorageTestCase(unittest.TestCase):
         data = client_socket.recv(length)
 
         if data != excepted:
-            self.assertEqual(data, excepted)
+            self.assertEqual(excepted, data)
 
         token = secrets.token_hex(16)
         payload = b"\x00" + token.encode()
@@ -330,6 +330,46 @@ class StorageTestCase(unittest.TestCase):
 
         payload = b"\x01"
         excepted = b"\x01"+token.encode()
+
+        client_socket.send(struct.pack(">I", 1))
+        client_socket.send(payload)
+        data = client_socket.recv(4)
+        length = struct.unpack(">I", data)[0]
+        data = client_socket.recv(length)
+
+        stop_server(server)
+
+        self.assertEqual(data, excepted)
+
+    def test_global_storage(self):
+        from tests.servers.storagetcp import server, mainloop
+        start_server(mainloop, server)
+
+        client_socket = socket.create_connection(("127.0.0.1", 1111))
+        client_socket.settimeout(5)
+
+
+        payload = b"\x03"
+        excepted = b"\x03NoSecret"
+
+        client_socket.send(struct.pack(">I", 1))
+        client_socket.send(payload)
+        data = client_socket.recv(4)
+        length = struct.unpack(">I", data)[0]
+        data = client_socket.recv(length)
+
+        if data != excepted:
+            self.assertEqual(excepted, data)
+
+        token = secrets.token_hex(16)
+        payload = b"\x02" + token.encode()
+
+
+        client_socket.send(struct.pack(">I", len(payload)))
+        client_socket.send(payload)
+
+        payload = b"\x03"
+        excepted = b"\x03"+token.encode()
 
         client_socket.send(struct.pack(">I", 1))
         client_socket.send(payload)
