@@ -9,3 +9,6 @@ class PlankyData(Data):
     Default implementation of Data
     """
     payload: bytes
+    '''
+    payload for sending
+    '''

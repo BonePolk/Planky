@@ -1,11 +1,12 @@
 from asyncio import StreamReader, StreamWriter
+from time import time
 
 from Planky.base.data.data import Data
-from Planky.base.data.extra import Extra
 from Planky.base.data.message import Message
 from Planky.base.protocol import Protocol
 from Planky.base.reader import Reader
 from Planky.base.server import Server
+from Planky.base.storage import Storage
 from Planky.base.writer import Writer
 
 
@@ -16,8 +17,11 @@ class Client:
         self.reader: Reader = Reader(reader, server.connected)
         self.writer: Writer = Writer(writer, server.connected)
         self.protocol = protocol
-        self.extra: Extra = self.parse_extra()
+
+        self.storage: Storage = Storage()
+        self.parse_extra()
         self.server: Server = server
+        self.ping_time = time()
 
         self.client_id = ""
         self.client_connected = False
@@ -30,12 +34,12 @@ class Client:
         """
         return self.server.connected and self.client_connected
 
-    def parse_extra(self) -> Extra:
+    def parse_extra(self):
         """
         Parse extra data from client.
 
-        _For example ip and port of client_
-        :return: Extra data
+        _Default is ip and port of client_
+        :return:
         """
         raise NotImplementedError
 
@@ -52,6 +56,7 @@ class Client:
         """
         Send ping to client.
         """
+        self.ping_time = time()
         await self.protocol.send_ping(self.writer)
 
     async def send_data(self, data: Data):
