@@ -2,7 +2,6 @@ from asyncio import StreamReader
 from codecs import StreamWriter
 
 from Planky.base.client import Client
-from Planky.base.data.extra import Extra
 from Planky.plankyReader import PlankyReader
 from Planky.plankyWriter import PlankyWriter
 
@@ -17,7 +16,8 @@ class PlankyClient(Client):
         self.writer = PlankyWriter(writer, self.is_connected)
         self.reader = PlankyReader(reader, self.is_connected)
 
-    def parse_extra(self) -> Extra:
+    def parse_extra(self):
         client_ip, client_port = self.writer.get_extra_info("peername")
-        return Extra(client_ip=client_ip, client_port=client_port)
 
+        self.storage.set("client_ip", client_ip)
+        self.storage.set("client_port", client_port)
