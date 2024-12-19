@@ -1,4 +1,4 @@
-### Version 0.0.1.3 (WIP)
+### `Version 0.1` Storage update
 
 - Fix unexpected disconnect
 - Removed unused tlsSetting class
@@ -12,7 +12,7 @@
 - add default value for Storage.get
 - Global storage for server
 
-### Version 0.0.1.2
+### `Version 0.0.1.2` First changelog patch
 
 - Fix receiving data with several clients
 - Now PlankyClient creating for next clients
